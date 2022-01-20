@@ -10,6 +10,7 @@ const RoonAdapter = require('./roonadapter.js');
 const SteelseriesAdapter = require('./steelseriesadapter.js');
 
 const hostname = os.hostname();
+const statePlaying = 'playing';
 
 let roonAdapter = null;
 let steelSeriesAdapter= null;
@@ -89,7 +90,7 @@ function roonCoreIsPaired(){
 function zoneIsPlayingSong(zone, state, songTitle, songArtists) {
   if(zone == settings.currentZone) {
     roonAdapter.sendRoonStatus(zone);
-    if(state == 'playing'){
+    if(state == statePlaying){
       setTooltipToCurrentSongAndArtist(zone, state, songTitle, songArtists);
     }
   }
@@ -97,7 +98,7 @@ function zoneIsPlayingSong(zone, state, songTitle, songArtists) {
 }
 
 function zoneIsPlayingSongSeekUpdate(zone, state, seekPosition, songLength, songTitle, songArtists, songAlbum){
-  if(steelSeriesAdapter && zone == settings.currentZone && state == 'playing') {
+  if(steelSeriesAdapter && zone == settings.currentZone && state == statePlaying) {
     steelSeriesAdapter.sendScrollTextToDisplay(
         zone,
         seekPosition, 
@@ -110,8 +111,8 @@ function zoneIsPlayingSongSeekUpdate(zone, state, seekPosition, songLength, song
 }
 
 function setTooltipToCurrentSongAndArtist(zone, state, songTitle, songArtists){
-  if(tray && zone == settings.currentZone && state == 'playing') {
-    tray.setToolTip(zone + " is playing " + songTitle + " by " + songArtists);
+  if(tray && zone == settings.currentZone && state == statePlaying) {
+    tray.setToolTip(zone + " is playing '" + songTitle + "' by " + songArtists);
   }
 }
 
@@ -128,7 +129,7 @@ function createTrayMenuItem(zoneName, zoneState){
   let icon = null;
   let checkedState = (zoneName == settings.currentZone);
   icon = stopIconFileName;
-  if(zoneState == "playing"){
+  if(zoneState == statePlaying){
     icon = playIconFileName;
   }
   if(zoneState == "paused"){
