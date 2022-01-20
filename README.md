@@ -1,4 +1,4 @@
-## Roon Now Playing as an Tray Application
+## Roon Now Playing as a Tray Application
 
 ## Introduction
 Experiment to have a Roon zone publish now playing song info to my Steelseries keyboard OLED screen using a Steelseries Gamesense App.
