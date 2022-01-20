@@ -57,3 +57,5 @@ If you want, you can package this app and run it as a "real" app.
 ```shell
 npm run make
 ```
+
+[Posted over at Roonlabs.com](https://community.roonlabs.com/t/diy-option-to-have-steelseries-keyboard-and-or-mouse-with-oled-screen-show-your-roon-now-playing-information/185827/4)
