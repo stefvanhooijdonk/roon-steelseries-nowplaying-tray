@@ -1,21 +1,13 @@
-const process = require( 'process');
-const os = require( 'os');
-const path = require('path');
-const fs = require( 'fs');
-
-const hostinfo = {
-  hostname: os.hostname(),
-  platform: os.platform(),
-  ALLUSERSPROFILE: process.env.ALLUSERSPROFILE
-} 
+const HostInfo = require('./hostinfo.js');
 
 const { app, nativeImage, Tray, Menu } = require('electron'); // http://electron.atom.io/docs/api
+const hostinfo = new HostInfo(app);
 
-if (hostinfo.platform == "darwin") {
+if (hostinfo.isMacOSX) {
   app.dock.hide();
 }
-console.log(hostinfo);
-
+const path = require('path');
+const fs = require( 'fs');
 
 const RoonAdapter = require('./roonadapter.js');
 const SteelseriesAdapter = require('./steelseriesadapter.js');
@@ -28,8 +20,9 @@ let steelSeriesAdapter= null;
 let playIconFileName = path.join(__dirname, '/assets/electron-play.png');
 let stopIconFileName = path.join(__dirname, '/assets/electron-stopped.png');
 let pauseIconFileName = path.join(__dirname, '/assets/electron-pause.png');
-let appSettingsFileName = path.join(app.getPath('userData'),"appsettings.json");
-let roonPairingTokenFileName = path.join(app.getPath('userData'),"roon-core-config.json");
+
+let appSettingsFileName = path.join(hostinfo.userDataPath, "appsettings.json");
+let roonPairingTokenFileName = path.join(hostinfo.userDataPath, "roon-core-config.json");
 
 let tray = null
 let settings = {currentZone: null};
@@ -38,6 +31,7 @@ let settings = {currentZone: null};
 app.whenReady().then(() => {
  
   loadSettings();
+  
   var iconPath = path.join(__dirname, '/assets/electron-icon.png') // your png tray icon
   let trayIcon = nativeImage.createFromPath(iconPath);
  

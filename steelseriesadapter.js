@@ -9,9 +9,9 @@ class SteelseriesAdapter {
   constructor(author, hostinfo) {
     // read file from correct location based on operating system
     this._gameSenseAddressFile = '/Library/Application Support/SteelSeries Engine 3/coreProps.json';
-    if (hostinfo.platform == "win32") {
+    if (hostinfo.isWindows) {
       this._gameSenseAddressFile = 
-        hostinfo.ALLUSERSPROFILE + '\\SteelSeries\\SteelSeries Engine 3\\coreProps.json';
+        hostinfo.windowsAllUserProfilesPath + '\\SteelSeries\\SteelSeries Engine 3\\coreProps.json';
     }
 
     this._steelseriesGameID = "SVHROON";
