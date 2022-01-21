@@ -7,6 +7,7 @@ class SteelseriesAdapter {
   // * Constructors
   // ********************************************
   constructor(author, hostinfo) {
+
     // read file from correct location based on operating system
     this._gameSenseAddressFile = '/Library/Application Support/SteelSeries Engine 3/coreProps.json';
     if (hostinfo.isWindows) {
@@ -23,6 +24,10 @@ class SteelseriesAdapter {
     this._progressBarResolution = 100;
   }
 
+  isConnected(){
+    return this._heartBeatTimer != null;
+  }
+
   start(){
     this._gameSenseUrl = this.findSteelSeriesEngineAddress();
     console.info("Steelseries gamesense found at: "+ this._gameSenseUrl);
@@ -35,7 +40,11 @@ class SteelseriesAdapter {
   }
 
   stop(){
-      if(this._heartBeatTimer) {clearTimeout(this._heartBeatTimer);}
+      this._connected = false;
+      if(this._heartBeatTimer) {
+        clearTimeout(this._heartBeatTimer);
+        this._heartBeatTimer = null
+      }
       this.removeGameFromSteelseries();
       this._textIndex = 0;
   }

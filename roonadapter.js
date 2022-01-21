@@ -16,6 +16,7 @@ class RoonAdapter extends EventEmitter{
     this._zones = {};
     this._author = author;
     this._hostname = hostinfo.hostname;
+    this._connected = false;
 
     this._roon = new RoonApi({
       extension_id:        "svh-roon-steelseries",
@@ -82,6 +83,10 @@ class RoonAdapter extends EventEmitter{
     return Object.assign({}, this._zones);
   }
 
+  isConnected() {
+    return this._connected;
+  }
+
   // ********************************************
   // * Public methods
   // ********************************************
@@ -111,7 +116,6 @@ class RoonAdapter extends EventEmitter{
   corePaired(core) {
     this._roonCore = core;
     
-    this.emit('core-paired');
     console.info("Roon Extention paired with Core.");
 
     const transport = core.services.RoonApiTransport;
@@ -134,11 +138,14 @@ class RoonAdapter extends EventEmitter{
         break;
       }
     });
+    this._connected = true;
+    this.emit('core-paired');
   }
 
   coreUnpaired(core) {
     // core.moo.transport.logger.log("Roon core unpaired");    
     this._nowPlaying = null;
+    this._connected = false;
     this.emit('core-unpaired');
     console.info("Roon Extention was un-paired with Core.");
   }

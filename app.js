@@ -31,7 +31,7 @@ let settings = {currentZone: null};
 app.whenReady().then(() => {
  
   loadSettings();
-  
+
   var iconPath = path.join(__dirname, '/assets/electron-icon.png') // your png tray icon
   let trayIcon = nativeImage.createFromPath(iconPath);
  
@@ -40,12 +40,13 @@ app.whenReady().then(() => {
   tray.on('before-quit', saveSettings);
 
   tray.setToolTip("Enable the Roon Extension...");
-  
+
   var author = "Stef van Hooijdonk";
 
   roonAdapter = new RoonAdapter(roonPairingTokenFileName, author, hostinfo);
 
   roonAdapter.on('core-paired',roonCoreIsPaired);
+  roonAdapter.on('core-unpaired',roonCoreIsUnPaired);
   roonAdapter.on('zones-updated',createTrayContextMenuFromZones);
   roonAdapter.on('zone-playing',zoneIsPlayingSong);
   roonAdapter.on('zone-playing-seekupdate',zoneIsPlayingSongSeekUpdate);
@@ -53,7 +54,9 @@ app.whenReady().then(() => {
 
   steelSeriesAdapter = new SteelseriesAdapter(author,hostinfo);
   steelSeriesAdapter.start();
-  steelSeriesAdapter.sendSimpleStatus(steelSeriesAdapter,"Loading ...","")
+  steelSeriesAdapter.sendSimpleStatus(steelSeriesAdapter,"Loading ...","");
+
+  createTrayContextMenuFromZones(null);
 });
 
 function quitApp(){
@@ -89,6 +92,11 @@ function saveSettings(){
 
 function roonCoreIsPaired(){
   tray.setToolTip("Connected to Roon, you can start playing...");
+  createTrayContextMenuFromZones(null);
+}
+function roonCoreIsUnPaired(){
+  tray.setToolTip("Not connected to Roon");
+  createTrayContextMenuFromZones(null);
 }
 
 function zoneIsPlayingSong(zone, state, songTitle, songArtists) {
@@ -156,15 +164,28 @@ function createTrayContextMenuFromZones(zones){
       const zone = zones[zoneId];
       contextMenuItems.push(createTrayMenuItem(zone._zoneName, zone.state));
     };
-
-    contextMenuItems.push({ type: 'separator'});
-        
-    contextMenuItems.push(
-          { label: "Quit", 
-            click: function (event) {
-              quitApp();
-            }});
-            
-    tray.setContextMenu(Menu.buildFromTemplate(contextMenuItems));
   }
+  contextMenuItems.push({ type: 'separator'});
+
+  contextMenuItems.push(
+    { label: "Roon",
+      type:"checkbox",
+      enabled: false,
+      checked: roonAdapter.isConnected()}); 
+
+  contextMenuItems.push(
+    { label: "Gamesense",
+      type:"checkbox",
+      enabled: false,
+      checked: steelSeriesAdapter.isConnected()}); 
+          
+  contextMenuItems.push({ type: 'separator'});
+  
+  contextMenuItems.push(
+        { label: "Quit", 
+          click: function (event) {
+            quitApp();
+          }});
+          
+  tray.setContextMenu(Menu.buildFromTemplate(contextMenuItems));
 }
