@@ -1,22 +1,17 @@
 const fs = require( 'fs');
-const path = require('path');
 const axios =require( "axios");
-const process = require("process");
 
 class SteelseriesAdapter {
 
   // ********************************************
   // * Constructors
   // ********************************************
-  constructor(author) {
-    
-    var os = process.platform;
-
+  constructor(author, hostinfo) {
     // read file from correct location based on operating system
     this._gameSenseAddressFile = '/Library/Application Support/SteelSeries Engine 3/coreProps.json';
-    if (os == "win32" || os == "win64") {
-      var env = process.env;
-      this._gameSenseAddressFile = env.ALLUSERSPROFILE + '\\SteelSeries\\SteelSeries Engine 3\\coreProps.json';
+    if (hostinfo.platform == "win32") {
+      this._gameSenseAddressFile = 
+        hostinfo.ALLUSERSPROFILE + '\\SteelSeries\\SteelSeries Engine 3\\coreProps.json';
     }
 
     this._steelseriesGameID = "SVHROON";

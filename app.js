@@ -1,15 +1,25 @@
-const { app, nativeImage, Tray, Menu } = require('electron') // http://electron.atom.io/docs/api
-
-app.dock.hide();
-
+const process = require( 'process');
+const os = require( 'os');
 const path = require('path');
 const fs = require( 'fs');
-const os = require( 'os');
+
+const hostinfo = {
+  hostname: os.hostname(),
+  platform: os.platform(),
+  ALLUSERSPROFILE: process.env.ALLUSERSPROFILE
+} 
+
+const { app, nativeImage, Tray, Menu } = require('electron'); // http://electron.atom.io/docs/api
+
+if (hostinfo.platform == "darwin") {
+  app.dock.hide();
+}
+console.log(hostinfo);
+
 
 const RoonAdapter = require('./roonadapter.js');
 const SteelseriesAdapter = require('./steelseriesadapter.js');
 
-const hostname = os.hostname();
 const statePlaying = 'playing';
 
 let roonAdapter = null;
@@ -39,7 +49,7 @@ app.whenReady().then(() => {
   
   var author = "Stef van Hooijdonk";
 
-  roonAdapter = new RoonAdapter(roonPairingTokenFileName, author, hostname);
+  roonAdapter = new RoonAdapter(roonPairingTokenFileName, author, hostinfo);
 
   roonAdapter.on('core-paired',roonCoreIsPaired);
   roonAdapter.on('zones-updated',createTrayContextMenuFromZones);
@@ -47,7 +57,7 @@ app.whenReady().then(() => {
   roonAdapter.on('zone-playing-seekupdate',zoneIsPlayingSongSeekUpdate);
   roonAdapter.start();
 
-  steelSeriesAdapter = new SteelseriesAdapter(author);
+  steelSeriesAdapter = new SteelseriesAdapter(author,hostinfo);
   steelSeriesAdapter.start();
   steelSeriesAdapter.sendSimpleStatus(steelSeriesAdapter,"Loading ...","")
 });

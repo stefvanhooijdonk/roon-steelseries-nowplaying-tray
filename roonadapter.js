@@ -11,11 +11,11 @@ class RoonAdapter extends EventEmitter{
   // ********************************************
   // * Constructors
   // ********************************************
-  constructor(roonPairingTokenFile, author, hostname) {  
+  constructor(roonPairingTokenFile, author, hostinfo) {  
     super();  
     this._zones = {};
     this._author = author;
-    this._hostname = hostname;
+    this._hostname = hostinfo.hostname;
 
     this._roon = new RoonApi({
       extension_id:        "svh-roon-steelseries",
