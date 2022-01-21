@@ -11,16 +11,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "axios": "0.24.0",
+    "axios": "^0.24.0",
     "electron-squirrel-startup": "^1.0.0",
     "node-roon-api": "github:roonlabs/node-roon-api",
     "node-roon-api-image": "github:roonlabs/node-roon-api-image",
     "node-roon-api-status": "github:roonlabs/node-roon-api-status",
     "node-roon-api-transport": "github:roonlabs/node-roon-api-transport",
     "slug": "^2.1.1",
-    "winston": "^3.4.0",
-    "os":"0.1.2",
-    "winston-daily-rotate-file": "^4.5.5"
+    "os":"^0.1.2"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",

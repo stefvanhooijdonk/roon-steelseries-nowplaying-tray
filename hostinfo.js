@@ -9,6 +9,7 @@ class HostInfo {
         this.isMacOSX = os.platform() == "darwin";
         this.isWindows = os.platform() == "win32";
         this.userDataPath = app.getPath('userData');
+        //this.applicationLogsPath = app.getPath('logs');
 
         // only on windows is this value relevant or available
         if(this.isWindows){
