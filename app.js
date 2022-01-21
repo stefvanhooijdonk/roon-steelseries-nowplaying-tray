@@ -94,6 +94,7 @@ function roonCoreIsPaired(){
   tray.setToolTip("Connected to Roon, you can start playing...");
   createTrayContextMenuFromZones(null);
 }
+
 function roonCoreIsUnPaired(){
   tray.setToolTip("Not connected to Roon");
   createTrayContextMenuFromZones(null);
