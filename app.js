@@ -13,6 +13,7 @@ const RoonAdapter = require('./roonadapter.js');
 const SteelseriesAdapter = require('./steelseriesadapter.js');
 
 const statePlaying = 'playing';
+const statePaused = 'paused';
 
 let roonAdapter = null;
 let steelSeriesAdapter= null;
@@ -145,7 +146,7 @@ function createTrayMenuItem(zoneName, zoneState){
   if(zoneState == statePlaying){
     icon = playIconFileName;
   }
-  if(zoneState == "paused"){
+  if(zoneState == statePaused){
     icon = pauseIconFileName;
   }
 
@@ -170,13 +171,13 @@ function createTrayContextMenuFromZones(zones){
 
   contextMenuItems.push(
     { label: "Roon",
-      type:"checkbox",
+      type:  "checkbox",
       enabled: false,
       checked: roonAdapter.isConnected()}); 
 
   contextMenuItems.push(
     { label: "Gamesense",
-      type:"checkbox",
+      type:  "checkbox",
       enabled: false,
       checked: steelSeriesAdapter.isConnected()}); 
           

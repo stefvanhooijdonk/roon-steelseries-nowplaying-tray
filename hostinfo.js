@@ -13,6 +13,7 @@ class HostInfo {
         // only on windows is this value relevant or available
         if(this.isWindows){
             const process = require( 'process');
+            
             this.windowsAllUserProfilesPath = process.env.ALLUSERSPROFILE;
         }
     }
