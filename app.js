@@ -1,6 +1,6 @@
 const HostInfo = require('./hostinfo.js');
 
-const { app, nativeImage, Tray, Menu } = require('electron'); // http://electron.atom.io/docs/api
+const { app, nativeImage, Tray, Menu, powerMonitor } = require('electron'); // http://electron.atom.io/docs/api
 const hostinfo = new HostInfo(app);
 
 if (hostinfo.isMacOSX) {
@@ -40,6 +40,9 @@ app.whenReady().then(() => {
   tray.on('double-click', quitApp);
   tray.on('before-quit', saveSettings);
 
+  powerMonitor.on('suspend',onSuspend);
+  powerMonitor.on('resume', onResume);
+   
   tray.setToolTip("Enable the Roon Extension...");
 
   var author = "Stef van Hooijdonk";
@@ -60,12 +63,35 @@ app.whenReady().then(() => {
   createTrayContextMenuFromZones(null);
 });
 
-function quitApp(){
+function onSuspend(){
+  // just to be sure
+  saveSettings();
+
   if(steelSeriesAdapter){
     steelSeriesAdapter.stop();
   }
-  if(settings){
-    saveSettings();
+  if(roonAdapter){
+    roonAdapter.stop();
+  }
+  createTrayContextMenuFromZones(null);
+}
+
+function onResume(){
+  if(steelSeriesAdapter){
+    steelSeriesAdapter.start();
+  }
+  if(roonAdapter){
+    roonAdapter.start();
+  }
+}
+
+function quitApp(){
+  saveSettings();
+  if(steelSeriesAdapter){
+    steelSeriesAdapter.stop();
+  }
+  if(roonAdapter){
+    roonAdapter.stop();
   }
   app.quit();
 }
@@ -82,13 +108,15 @@ function loadSettings(){
 }
 
 function saveSettings(){
-  try {
-    fs.writeFileSync(
-      appSettingsFileName, 
-      JSON.stringify(settings, null, '    '));
+  if(settings){
+    try {
+      fs.writeFileSync(
+        appSettingsFileName, 
+        JSON.stringify(settings, null, '    '));
     } catch (e) {
       console.error(e);
     } 
+  }
 }
 
 function roonCoreIsPaired(){
@@ -133,8 +161,12 @@ function setTooltipToCurrentSongAndArtist(zone, state, songTitle, songArtists){
 function trayContextMenuSelectedZone(menuItem, browserWindow, event){
   settings.currentZone = menuItem.label;
   tray.setToolTip("New zone selected: " + settings.currentZone);
-  if(roonAdapter) { roonAdapter.sendRoonStatus(settings.currentZone); }
-  if(steelSeriesAdapter) { steelSeriesAdapter.newSongStarted(); }
+  if(roonAdapter) { 
+    roonAdapter.sendRoonStatus(settings.currentZone); 
+  }
+  if(steelSeriesAdapter) { 
+    steelSeriesAdapter.newSongStarted(); 
+  }
   console.info("New zone selected: " + settings.currentZone);
 }
 
