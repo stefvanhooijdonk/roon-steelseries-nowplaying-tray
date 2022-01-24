@@ -77,6 +77,7 @@ function onSuspend(){
 }
 
 function onResume(){
+  createTrayContextMenuFromZones(null);
   if(steelSeriesAdapter){
     steelSeriesAdapter.start();
   }
