@@ -52,7 +52,7 @@ class SteelseriesAdapter {
   sendSimpleStatus(ctx, line1, line2){
     this._textIndex = 0;
 
-    var displayevent = {
+    let displayevent = {
       game: ctx._steelseriesGameID,
       event: ctx._steelseriesGameEventID,
       data: {
@@ -73,10 +73,10 @@ class SteelseriesAdapter {
   sendScrollTextToDisplay(zoneName, seekPosition, songLength, songTitle, songArtists, songAlbum){        
 
     // calcuate progress 0<100;
-    var progressBar = Math.floor(seekPosition / songLength * this._progressBarResolution);
+    let progressBar = Math.floor(seekPosition / songLength * this._progressBarResolution);
 
     // scroll song title if too long.
-    var scrollingText = songTitle;
+    let scrollingText = songTitle;
 
     // about 16 chars fit on zone one of Steelseries OLEDS
     if(scrollingText.length > 16){
@@ -90,7 +90,7 @@ class SteelseriesAdapter {
         }
     }
 
-    var nowplayingevent = {
+    let nowplayingevent = {
     game: this._steelseriesGameID,
     event: this._steelseriesGameEventID,
     data: {

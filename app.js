@@ -33,7 +33,7 @@ app.whenReady().then(() => {
  
   loadSettings();
 
-  var iconPath = path.join(__dirname, '/assets/electron-icon.png') // your png tray icon
+  let iconPath = path.join(__dirname, '/assets/electron-icon.png') // your png tray icon
   let trayIcon = nativeImage.createFromPath(iconPath);
  
   tray = new Tray(trayIcon);
@@ -45,7 +45,7 @@ app.whenReady().then(() => {
    
   tray.setToolTip("Enable the Roon Extension...");
 
-  var author = "Stef van Hooijdonk";
+  let author = "Stef van Hooijdonk";
 
   roonAdapter = new RoonAdapter(roonPairingTokenFileName, author, hostinfo);
 
@@ -193,7 +193,7 @@ function createTrayMenuItem(zoneName, zoneState){
 }
 
 function createTrayContextMenuFromZones(zones){
-  var contextMenuItems = new Array();
+  let contextMenuItems = new Array();
   if(zones){
     for(const zoneId of Object.keys(zones)) {
       const zone = zones[zoneId];
