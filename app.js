@@ -64,6 +64,7 @@ app.whenReady().then(() => {
 });
 
 function onSuspend(){
+  console.log("suspending app, turing off roon and steelseries connections")
   // just to be sure
   saveSettings();
 
@@ -77,6 +78,7 @@ function onSuspend(){
 }
 
 function onResume(){
+  console.log("resuming app, turing on roon and steelseries connections")
   createTrayContextMenuFromZones(null);
   if(steelSeriesAdapter){
     steelSeriesAdapter.start();
@@ -142,6 +144,11 @@ function zoneIsPlayingSong(zone, state, songTitle, songArtists) {
 
 function zoneIsPlayingSongSeekUpdate(zone, state, seekPosition, songLength, songTitle, songArtists, songAlbum){
   if(steelSeriesAdapter && zone == settings.currentZone && state == statePlaying) {
+    
+    if(!steelSeriesAdapter.isConnected()){
+      steelSeriesAdapter.start();
+    }
+
     steelSeriesAdapter.sendScrollTextToDisplay(
         zone,
         seekPosition, 

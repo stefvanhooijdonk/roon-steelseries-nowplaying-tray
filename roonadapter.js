@@ -102,12 +102,12 @@ class RoonAdapter extends EventEmitter{
       this.roonApiStatus.set_status("Extension enabled on " + this._hostname, false);
 
       this.roon.start_discovery();
-      console.info("Roon Extention started discovery.");
+      console.info("Roon Extension started discovery.");
   }
 
   stop(){
     this.roonApiStatus = null;
-    console.info("Roon Extention stopped.");
+    console.info("Roon Extension stopped.");
   }
 
   // ********************************************

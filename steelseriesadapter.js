@@ -40,7 +40,6 @@ class SteelseriesAdapter {
   }
 
   stop(){
-      this._connected = false;
       if(this._heartBeatTimer) {
         clearTimeout(this._heartBeatTimer);
         this._heartBeatTimer = null
@@ -148,7 +147,7 @@ class SteelseriesAdapter {
         console.log(`Registered Game in Steelseries Engine: statusCode: ${res.status}`);
       })
       .catch(error => {
-        console.error(error);
+        this.logError(error);
       });
 
     const roonnowplaying = {
@@ -177,7 +176,7 @@ class SteelseriesAdapter {
         console.info(`Registered Now Playing in Steelseries Engine: statusCode: ${res.status}`)
       })
       .catch(error => {
-        console.error(error);
+        this.logError(error);
       });
   }
 
@@ -189,7 +188,7 @@ class SteelseriesAdapter {
         console.info(`Remove Game in Steelseries Engine: statusCode: ${res.status}`);
       })
       .catch(error => {
-        console.error(error);
+        this.logError(error);
       });
 
   }
@@ -202,14 +201,17 @@ class SteelseriesAdapter {
         //console.log(`Sent event to Steelseries Engine: statusCode: ${res.status}`)
       })
       .catch(error => {
-        console.error(error);
-        // maybe Steelseries Gamesense restarted and is using a new port:
-        ctx.findSteelSeriesEngineAddress();
+        ctx.logError(error);
+        this.stop();
       });    
   }
 
   getSteelseriesAPIUrl(ctx, apiendpoint){
     return  'http://' + ctx._gameSenseUrl + "/" + apiendpoint;
+  }
+
+  logError(error){
+    console.error(error.code + " " + error.config.url);
   }
 }
 
