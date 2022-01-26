@@ -193,8 +193,10 @@ class RoonAdapter extends EventEmitter{
   }
   
   sendRoonStatus(zoneName){
-    this.roonApiStatus.set_status(
-      "On " + this._hostname + " showing zone " + zoneName + " on Steelseries keyboard", false);
+    if(this.isConnected()) {
+      this.roonApiStatus.set_status(
+        "On " + this._hostname + " showing zone " + zoneName + " on Steelseries keyboard", false);
+    }
   }
 
   updateZonesFromSeekData(zoneData) {
