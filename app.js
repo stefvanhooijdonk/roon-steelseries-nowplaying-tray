@@ -25,6 +25,8 @@ let pauseIconFileName = path.join(__dirname, '/assets/electron-pause.png');
 let appSettingsFileName = path.join(hostinfo.userDataPath, "appsettings.json");
 let roonPairingTokenFileName = path.join(hostinfo.userDataPath, "roon-core-config.json");
 
+let currentZones = null;
+
 let tray = null
 let settings = {currentZone: null};
 
@@ -55,13 +57,30 @@ app.whenReady().then(() => {
   roonAdapter.on('zone-playing',zoneIsPlayingSong);
   roonAdapter.on('zone-playing-seekupdate',zoneIsPlayingSongSeekUpdate);
   roonAdapter.start();
-
-  steelSeriesAdapter = new SteelseriesAdapter(author,hostinfo);
+  
+  steelSeriesAdapter = new SteelseriesAdapter(author, hostinfo);
   steelSeriesAdapter.start();
   steelSeriesAdapter.sendSimpleStatus(steelSeriesAdapter,"Loading ...","");
 
-  createTrayContextMenuFromZones(null);
+  createTrayContextMenuFromZones(currentZones);
 });
+
+function initRoonAdapter(){
+  if(roonAdapter){
+    roonAdapter.stop();
+  }
+
+  roonAdapter.start();
+  createTrayContextMenuFromZones(currentZones);
+}
+
+function initSteelseriesAdapter(){
+  if(steelSeriesAdapter){
+    steelSeriesAdapter.stop();
+  }
+  steelSeriesAdapter.start();
+  createTrayContextMenuFromZones(currentZones);
+}
 
 function onSuspend(){
   console.log("Suspending app, turing off roon and steelseries connections")
@@ -74,7 +93,7 @@ function onSuspend(){
   if(roonAdapter){
     roonAdapter.stop();
   }
-  createTrayContextMenuFromZones(null);
+  createTrayContextMenuFromZones(currentZones);
 }
 
 function onResume(){
@@ -85,7 +104,7 @@ function onResume(){
   if(roonAdapter){
     roonAdapter.start();
   }
-  createTrayContextMenuFromZones(null);
+  createTrayContextMenuFromZones(currentZones);
 }
 
 function quitApp(){
@@ -196,10 +215,14 @@ function createTrayMenuItem(zoneName, zoneState){
 }
 
 function createTrayContextMenuFromZones(zones){
+  if (zones) { 
+    currentZones = zones;
+  }
+  
   let contextMenuItems = new Array();
-  if(zones){
-    for(const zoneId of Object.keys(zones)) {
-      const zone = zones[zoneId];
+  if(currentZones){
+    for(const zoneId of Object.keys(currentZones)) {
+      const zone = currentZones[zoneId];
       contextMenuItems.push(createTrayMenuItem(zone._zoneName, zone.state));
     };
   }
@@ -208,13 +231,19 @@ function createTrayContextMenuFromZones(zones){
   contextMenuItems.push(
     { label: "Roon",
       type:  "checkbox",
-      enabled: false,
+      enabled: !roonAdapter.isConnected(),
+      click: function (event) {
+        if(!roonAdapter.isConnected()){initRoonAdapter();}
+      },
       checked: roonAdapter.isConnected()}); 
 
   contextMenuItems.push(
     { label: "Gamesense",
       type:  "checkbox",
-      enabled: false,
+      enabled: !steelSeriesAdapter.isConnected(),
+      click: function (event) {
+        if(!steelSeriesAdapter.isConnected()){initSteelseriesAdapter();}
+      },
       checked: steelSeriesAdapter.isConnected()}); 
           
   contextMenuItems.push({ type: 'separator'});
