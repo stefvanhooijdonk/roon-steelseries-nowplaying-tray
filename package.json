@@ -1,8 +1,8 @@
 {
   "name": "roon-steelseries-tray",
   "version": "1.0.0",
-  "description": "Show electron web site in tray",
-  "repository": "electron/simple-samples",
+  "description": "Show Roon Zones and now playing in tray, and send it to the SteelSeries Oled Screens via GameSense",
+  "repository": "electron/roon-steelseries-nowplaying-tray",
   "main": "app.js",
   "scripts": {
     "start": "electron-forge start",
@@ -17,8 +17,8 @@
     "node-roon-api-image": "github:roonlabs/node-roon-api-image",
     "node-roon-api-status": "github:roonlabs/node-roon-api-status",
     "node-roon-api-transport": "github:roonlabs/node-roon-api-transport",
-    "slug": "^5.3.0",
-    "os":"^0.1.2"
+    "os": "^0.1.2",
+    "slug": "^5.3.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",
@@ -26,7 +26,7 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.63",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
-    "electron": "^19.0.3"
+    "electron": "^23.1.4"
   },
   "config": {
     "forge": {
