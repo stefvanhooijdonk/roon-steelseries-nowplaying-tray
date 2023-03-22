@@ -220,13 +220,13 @@ function createTrayContextMenuFromZones(zones){
   }
   
   let contextMenuItems = new Array();
-  if(currentZones){
+  if(currentZones && roonAdapter.isConnected()){
     for(const zoneId of Object.keys(currentZones)) {
       const zone = currentZones[zoneId];
       contextMenuItems.push(createTrayMenuItem(zone._zoneName, zone.state));
     };
+    contextMenuItems.push({ type: 'separator'});
   }
-  contextMenuItems.push({ type: 'separator'});
 
   contextMenuItems.push(
     { label: "Roon",
