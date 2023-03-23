@@ -75,5 +75,8 @@ Building and publishing. Make sure to have a GITHUB_TOKEN in your environment se
 npm run make
 npm run publish
 ```
+## Releases
+And the releases can be found at [github: roon-steelseries-nowplaying-tray](./releases/).
 
+## Roonlabs 
 [Posted over at Roonlabs.com](https://community.roonlabs.com/t/diy-option-to-have-steelseries-keyboard-and-or-mouse-with-oled-screen-show-your-roon-now-playing-information/185827/4)
