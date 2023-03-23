@@ -1,6 +1,6 @@
 {
   "name": "roon-steelseries-tray",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Show Roon Zones and now playing in tray, and send it to the SteelSeries Oled Screens via GameSense",
   "repository": "https://github.com/stefvanhooijdonk/roon-steelseries-nowplaying-tray",
   "main": "app.js",
@@ -34,7 +34,6 @@
     "forge": {
       "packagerConfig": {
         "osxSign": {}
-
       },
       "publishers": [
         {
