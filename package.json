@@ -2,7 +2,7 @@
   "name": "roon-steelseries-tray",
   "version": "1.1.1",
   "description": "Show Roon Zones and now playing in tray, and send it to the SteelSeries Oled Screens via GameSense",
-  "repository": "stervanhooijdonk/roon-steelseries-nowplaying-tray",
+  "repository": "https://github.com/stefvanhooijdonk/roon-steelseries-nowplaying-tray",
   "main": "app.js",
   "scripts": {
     "start": "electron-forge start",
@@ -19,7 +19,8 @@
     "node-roon-api-status": "github:roonlabs/node-roon-api-status",
     "node-roon-api-transport": "github:roonlabs/node-roon-api-transport",
     "os": "^0.1.2",
-    "slug": "^5.3.0"
+    "slug": "^5.3.0",
+    "update-electron-app": "^2.0.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.5",
