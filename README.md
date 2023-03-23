@@ -58,4 +58,22 @@ If you want, you can package this app and run it as a "real" app.
 npm run make
 ```
 
+## To release a new build/version (reminder for myself)
+```shell
+npm version patch 
+git push --follow-tags
+```
+or a minor version
+```shell
+npm version minor
+git push --follow-tags
+```
+
+Building and publishing. Make sure to have a GITHUB_TOKEN in your environment settins in your shell.
+
+```shell
+npm run make
+npm run publish
+```
+
 [Posted over at Roonlabs.com](https://community.roonlabs.com/t/diy-option-to-have-steelseries-keyboard-and-or-mouse-with-oled-screen-show-your-roon-now-playing-information/185827/4)
