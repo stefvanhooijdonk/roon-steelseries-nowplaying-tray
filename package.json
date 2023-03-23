@@ -32,7 +32,10 @@
   },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "osxSign": {}
+
+      },
       "publishers": [
         {
           "name": "@electron-forge/publisher-github",

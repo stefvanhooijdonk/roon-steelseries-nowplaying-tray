@@ -8,7 +8,6 @@ if (hostinfo.isMacOSX) {
 }
 const path = require('path');
 const fs = require( 'fs');
-const updateApp = require('update-electron-app');
 
 const RoonAdapter = require('./roonadapter.js');
 const SteelseriesAdapter = require('./steelseriesadapter.js');
@@ -45,11 +44,6 @@ app.whenReady().then(() => {
 
   powerMonitor.on('suspend',onSuspend);
   powerMonitor.on('resume', onResume);
-  
-  // look for updates.
-  updateApp({
-      notifyUser: true
-  });
 
   tray.setToolTip("Enable the Roon Extension...");
 

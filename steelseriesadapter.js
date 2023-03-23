@@ -46,6 +46,7 @@ class SteelseriesAdapter {
       }
       this.removeGameFromSteelseries();
       this._textIndex = 0;
+      console.info("Steelseries Extension stopped.");
   }
 
   sendSimpleStatus(ctx, line1, line2){
