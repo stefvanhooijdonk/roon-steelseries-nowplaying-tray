@@ -33,7 +33,6 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "osxSign": {}
       },
       "publishers": [
         {
@@ -52,7 +51,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "roon-steelseries-tray",
+            "name": "roon_steelseries_tray",
             "authors": "Stef van Hooijdonk"
           }
         },
