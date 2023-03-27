@@ -84,7 +84,7 @@ class RoonAdapter extends EventEmitter{
   }
 
   isConnected() {
-    return this._connected;
+    return this._connected && this.roonApiStatus;
   }
 
   // ********************************************

@@ -1,6 +1,6 @@
 {
   "name": "roon-steelseries-tray",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Show Roon Zones and now playing in tray, and send it to the SteelSeries Oled Screens via GameSense",
   "repository": "https://github.com/stefvanhooijdonk/roon-steelseries-nowplaying-tray",
   "main": "app.js",
@@ -13,6 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.27.2",
+    "electron-log": "^5.0.0-beta.16",
     "electron-squirrel-startup": "^1.0.0",
     "node-roon-api": "github:roonlabs/node-roon-api",
     "node-roon-api-image": "github:roonlabs/node-roon-api-image",
@@ -24,9 +25,10 @@
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.5",
-    "@electron-forge/maker-dmg": "^6.0.0-beta.63",
+    "@electron-forge/maker-dmg": "^6.0.5",
     "@electron-forge/maker-squirrel": "^6.0.5",
     "@electron-forge/publisher-github": "^6.0.5",
+    "@electron-forge/maker-zip":"^6.0.5",
     "appdmg": "^0.6.6",
     "electron": "^23.1.4"
   },
@@ -50,17 +52,27 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "roon_steelseries_tray",
+            "name": "roon-steelseries-tray",
             "authors": "Stef van Hooijdonk"
           }
         },
         {
           "name": "@electron-forge/maker-dmg",
           "config": {
-            "title": "roon-steelseries-tray",
-            "name": "roon_steelseries_tray",
+            "title": "Roon Steelseries tray app",
+            "name": "roon-steelseries-tray",
             "authors": "Stef van Hooijdonk",
             "format": "ULFO"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ],
+          "config": {
+            "name": "roon-steelseries-tray",
+            "authors": "Stef van Hooijdonk"
           }
         }
       ]

@@ -6,11 +6,17 @@ const hostinfo = new HostInfo(app);
 if (hostinfo.isMacOSX) {
   app.dock.hide();
 }
+
 const path = require('path');
 const fs = require( 'fs');
 
 const RoonAdapter = require('./roonadapter.js');
 const SteelseriesAdapter = require('./steelseriesadapter.js');
+const version = app.getVersion();
+
+require('update-electron-app')({
+  logger: require('electron-log')
+});
 
 const statePlaying = 'playing';
 const statePaused = 'paused';
@@ -247,6 +253,8 @@ function createTrayContextMenuFromZones(zones){
       checked: steelSeriesAdapter.isConnected()}); 
           
   contextMenuItems.push({ type: 'separator'});
+  contextMenuItems.push({ label:"Version: " + version });
+      
   
   contextMenuItems.push(
         { label: "Quit", 
