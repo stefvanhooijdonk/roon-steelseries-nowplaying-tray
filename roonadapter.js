@@ -84,7 +84,7 @@ class RoonAdapter extends EventEmitter{
   }
 
   isConnected() {
-    return this._connected && this.roonApiStatus;
+    return this._connected;
   }
 
   // ********************************************
@@ -193,7 +193,7 @@ class RoonAdapter extends EventEmitter{
   }
   
   sendRoonStatus(zoneName){
-    if(this.isConnected()) {
+    if(this.isConnected() && this.roonApiStatus) {
       this.roonApiStatus.set_status(
         "On " + this._hostname + " showing zone " + zoneName + " on Steelseries keyboard", false);
     }

@@ -12,6 +12,8 @@ const fs = require( 'fs');
 
 const RoonAdapter = require('./roonadapter.js');
 const SteelseriesAdapter = require('./steelseriesadapter.js');
+const DiscordAdapter = require('./discordadapter.js');
+
 const version = app.getVersion();
 
 require('update-electron-app')({
@@ -23,6 +25,7 @@ const statePaused = 'paused';
 
 let roonAdapter = null;
 let steelSeriesAdapter= null;
+let discordAdapter = null;
 
 let playIconFileName = path.join(__dirname, '/assets/electron-play.png');
 let stopIconFileName = path.join(__dirname, '/assets/electron-stopped.png');
@@ -62,11 +65,19 @@ app.whenReady().then(() => {
   roonAdapter.on('zones-updated',createTrayContextMenuFromZones);
   roonAdapter.on('zone-playing',zoneIsPlayingSong);
   roonAdapter.on('zone-playing-seekupdate',zoneIsPlayingSongSeekUpdate);
-  roonAdapter.start();
   
   steelSeriesAdapter = new SteelseriesAdapter(author, hostinfo);
+
+  discordAdapter = new DiscordAdapter('1092727170369081354');
+  discordAdapter.on('discord-connected',discordConnected);
+  discordAdapter.on('discord-disconnected',discordDisconnected);
+
+  discordAdapter.start();
+
   steelSeriesAdapter.start();
   steelSeriesAdapter.sendSimpleStatus(steelSeriesAdapter,"Loading ...","");
+
+  roonAdapter.start();
 
   createTrayContextMenuFromZones(currentZones);
 });
@@ -109,6 +120,9 @@ function onResume(){
   }
   if(roonAdapter){
     roonAdapter.start();
+  }
+  if(discordAdapter){
+    discordAdapter.start();
   }
   createTrayContextMenuFromZones(currentZones);
 }
@@ -162,9 +176,22 @@ function zoneIsPlayingSong(zone, state, songTitle, songArtists) {
     roonAdapter.sendRoonStatus(zone);
     if(state == statePlaying){
       setTooltipToCurrentSongAndArtist(zone, state, songTitle, songArtists);
+      discordAdapter.setActivity(songTitle, songArtists, 0, 0, zone);
     }
   }
   createTrayContextMenuFromZones();
+}
+
+function discordConnected() {
+  console.log("Discord connected.")
+
+  createTrayContextMenuFromZones(null);
+}
+
+function discordDisconnected() {
+  console.log("Discord disconnected.")
+
+  createTrayContextMenuFromZones(null);
 }
 
 function zoneIsPlayingSongSeekUpdate(zone, state, seekPosition, songLength, songTitle, songArtists, songAlbum){
@@ -177,6 +204,9 @@ function zoneIsPlayingSongSeekUpdate(zone, state, seekPosition, songLength, song
         songTitle, 
         songArtists, 
         songAlbum);
+    
+        // line1, line2, songLength, currentSeek, zoneName
+    discordAdapter.setActivity(songTitle, songArtists, songLength, seekPosition, zone);
   }
   setTooltipToCurrentSongAndArtist(zone, state, songTitle, songArtists);
 }
@@ -251,7 +281,13 @@ function createTrayContextMenuFromZones(zones){
         if(!steelSeriesAdapter.isConnected()){initSteelseriesAdapter();}
       },
       checked: steelSeriesAdapter.isConnected()}); 
-          
+
+  contextMenuItems.push(
+      { label: "Discord",
+        type:  "checkbox",
+        enabled: false,
+        checked: discordAdapter.isConnected()}); 
+    
   contextMenuItems.push({ type: 'separator'});
   contextMenuItems.push({ label:"Version: " + version });
       
