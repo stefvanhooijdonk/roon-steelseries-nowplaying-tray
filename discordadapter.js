@@ -3,27 +3,34 @@ const DiscordRPC = require('discord-rpc');
 
 class DiscordAdapter extends EventEmitter {
 
-    constructor(discordClientId){
+    constructor(discordClientId, discordClientSecret, discordAccessToken){
         super();
         this._discordClientId = discordClientId;
+        this._discordClientSecret = discordClientSecret;
+        this._discordAccessToken = discordAccessToken;
         this._discordConnected = false;
         this._reconnectionTimer = null;
-        this._rpc = null;
-        this._lastSentStatus = null;        
+        //this._rpc = null;
+        this._discordClient = null;
+        this._lastSentStatus = null;
+        this._lastSongTitle = null;        
     }
 
     scheduleReconnection(discordAdapter) {
         clearTimeout(discordAdapter._reconnectionTimer);
         discordAdapter._discordConnected = false;
         discordAdapter._lastSentStatus = null;        
+        
         console.log('Discord trying to connect to local app in 5 secs..');
+        
         discordAdapter._reconnectionTimer = setTimeout(
             discordAdapter.connectToDiscord, 
             5 * 1000, 
             discordAdapter);
     }
     
-    connectToDiscord(discordAdapter) {    
+    connectToDiscord(discordAdapter) {
+
         if( discordAdapter._rpc && 
             discordAdapter._rpc.transport &&
             discordAdapter._rpc.transport.socket && 
@@ -51,10 +58,19 @@ class DiscordAdapter extends EventEmitter {
         try {
             // (syn): by sending `scopes`, the client constantly prompts for auth.
             // seems to work fine without it.
+            
             console.log('Discord rpc login..');
-            discordAdapter._rpc.login({ clientId:discordAdapter._discordClientId });
-        } catch {
-            console.log('Nope');    
+            discordAdapter._rpc.login({ 
+                clientId:discordAdapter._discordClientId,
+                clientSecret:discordAdapter._discordClientSecret //,
+                //scopes: ["rpc", "identify"],
+                //redirectUri: 'http://localhost:3000/api/auth/callback/discord' 
+            }).catch(console.error);
+
+            discordAdapter._discordAccessToken = discordAdapter._rpc.accessToken;
+        } 
+        catch(error){
+            console.log('Error in discord: ' + error);  
             discordAdapter.scheduleReconnection(discordAdapter);
         }
     }
@@ -69,16 +85,18 @@ class DiscordAdapter extends EventEmitter {
 
         const startTimestamp = Math.round((new Date().getTime() / 1000) - currentSeek);
         const endTimestamp = Math.round(startTimestamp + songLength);
+        let songtitle = line1.substring(0, 128);
 
         // rate limit a bit...
-        if(Date.now() - this._lastSentStatus < 1000 * 10) {
+        if(Date.now() - this._lastSentStatus < 1000 * 10 && songtitle == this._lastSongTitle) {
             return;
         } else {
             this._lastSentStatus = Date.now();
+            this._lastSongTitle = songtitle;
         }
 
-        this._rpc.setActivity({
-            details: line1.substring(0, 128),
+        this._rpc.setActivity({ 
+            details: songtitle,
             state: line2.substring(0, 128),
             startTimestamp,
             endTimestamp,
@@ -104,8 +122,7 @@ class DiscordAdapter extends EventEmitter {
     }
 
     setActivityPaused(line1, line2, zoneName) {
-        if(!this.isConnected()) return;
-        
+        if(!this.isConnected()) return;        
         this._rpc.clearActivity();
     }
 
@@ -120,6 +137,12 @@ class DiscordAdapter extends EventEmitter {
         this.connectToDiscord(this);
     }
     
+    stop(){
+        console.log("Discord disconnecting to local app");
+        if(!this.isConnected()) return;
+        this._rpc.clearActivity();
+    }
+
     isConnected() {
         return this._rpc && this._discordConnected;
     }

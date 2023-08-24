@@ -37,7 +37,7 @@ let roonPairingTokenFileName = path.join(hostinfo.userDataPath, "roon-core-confi
 let currentZones = null;
 
 let tray = null
-let settings = {currentZone: null};
+let settings = {currentZone: null, discordClientId:null, discordClientSecret: null, discordAuthToken:null};
 
 // Wait until the app is ready
 app.whenReady().then(() => {
@@ -58,6 +58,9 @@ app.whenReady().then(() => {
 
   let author = "Stef van Hooijdonk";
 
+  settings.discordClientId = "-empty-";
+  settings.discordClientSecret = "-empty-";
+  
   roonAdapter = new RoonAdapter(roonPairingTokenFileName, author, hostinfo);
 
   roonAdapter.on('core-paired',roonCoreIsPaired);
@@ -68,10 +71,9 @@ app.whenReady().then(() => {
   
   steelSeriesAdapter = new SteelseriesAdapter(author, hostinfo);
 
-  discordAdapter = new DiscordAdapter('1092727170369081354');
+  discordAdapter = new DiscordAdapter(settings.discordClientId, settings.discordAuthToken);
   discordAdapter.on('discord-connected',discordConnected);
   discordAdapter.on('discord-disconnected',discordDisconnected);
-
   discordAdapter.start();
 
   steelSeriesAdapter.start();
@@ -98,6 +100,15 @@ function initSteelseriesAdapter(){
   steelSeriesAdapter.start();
   createTrayContextMenuFromZones(currentZones);
 }
+
+function initDiscordAdapter(){
+  if(discordAdapter){
+    discordAdapter.stop();
+  }
+  discordAdapter.start();
+  createTrayContextMenuFromZones(currentZones);
+}
+
 
 function onSuspend(){
   console.log("Suspending app, turing off roon and steelseries connections")
@@ -184,7 +195,7 @@ function zoneIsPlayingSong(zone, state, songTitle, songArtists) {
 
 function discordConnected() {
   console.log("Discord connected.")
-
+  settings.discordAuthToken = discordAdapter._discordAccessToken;  
   createTrayContextMenuFromZones(null);
 }
 
@@ -285,7 +296,10 @@ function createTrayContextMenuFromZones(zones){
   contextMenuItems.push(
       { label: "Discord",
         type:  "checkbox",
-        enabled: false,
+        enabled: !discordAdapter.isConnected(),
+        click: function (event) {
+          if(!discordAdapter.isConnected()){initDiscordAdapter();}
+        },
         checked: discordAdapter.isConnected()}); 
     
   contextMenuItems.push({ type: 'separator'});
