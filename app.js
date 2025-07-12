@@ -37,7 +37,7 @@ let roonPairingTokenFileName = path.join(hostinfo.userDataPath, "roon-core-confi
 let currentZones = null;
 
 let tray = null
-let settings = {currentZone: null, discordClientId:null, discordClientSecret: null, discordAuthToken:null};
+let settings = {currentZone: null, discordClientId:'1092727170369081354', discordClientSecret: null, discordAuthToken:null};
 
 // Wait until the app is ready
 app.whenReady().then(() => {
@@ -71,10 +71,12 @@ app.whenReady().then(() => {
   
   steelSeriesAdapter = new SteelseriesAdapter(author, hostinfo);
 
-  discordAdapter = new DiscordAdapter(settings.discordClientId, settings.discordAuthToken);
-  discordAdapter.on('discord-connected',discordConnected);
-  discordAdapter.on('discord-disconnected',discordDisconnected);
-  discordAdapter.start();
+  if(settings.discordClientId != '-empty-') {
+    discordAdapter = new DiscordAdapter(settings.discordClientId, settings.discordAuthToken);
+    discordAdapter.on('discord-connected',discordConnected);
+    discordAdapter.on('discord-disconnected',discordDisconnected);
+    discordAdapter.start();
+  }
 
   steelSeriesAdapter.start();
   steelSeriesAdapter.sendSimpleStatus(steelSeriesAdapter,"Loading ...","");
@@ -292,8 +294,9 @@ function createTrayContextMenuFromZones(zones){
         if(!steelSeriesAdapter.isConnected()){initSteelseriesAdapter();}
       },
       checked: steelSeriesAdapter.isConnected()}); 
-
-  contextMenuItems.push(
+  
+  if(discordAdapter){
+    contextMenuItems.push(
       { label: "Discord",
         type:  "checkbox",
         enabled: !discordAdapter.isConnected(),
@@ -301,7 +304,7 @@ function createTrayContextMenuFromZones(zones){
           if(!discordAdapter.isConnected()){initDiscordAdapter();}
         },
         checked: discordAdapter.isConnected()}); 
-    
+  }
   contextMenuItems.push({ type: 'separator'});
   contextMenuItems.push({ label:"Version: " + version });
       
